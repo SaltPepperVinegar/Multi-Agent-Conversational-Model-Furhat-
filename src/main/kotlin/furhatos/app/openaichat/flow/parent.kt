@@ -5,7 +5,6 @@ import furhatos.flow.kotlin.*
 
 
 val Parent: State = state {
-
     onUserLeave(instant = true) {
         if (users.count > 0) {
             if (it == users.current) {

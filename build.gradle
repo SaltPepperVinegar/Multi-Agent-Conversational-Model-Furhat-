@@ -37,6 +37,7 @@ compileTestKotlin {
 
 repositories {
     mavenLocal()
+    mavenCentral()
     maven { url "https://s3-eu-west-1.amazonaws.com/furhat-maven/releases"}
     maven { url 'https://repo.gradle.org/gradle/libs-releases' }
     jcenter()
@@ -46,6 +47,10 @@ repositories {
 dependencies {
     implementation 'com.furhatrobotics.furhatos:furhat-commons:2.7.0'
     implementation 'com.theokanning.openai-gpt3-java:client:0.12.0'
+    implementation 'com.openai:openai-java:3.5.2'
+    implementation("com.google.code.gson:gson:2.11.0")
+
+
 }
 
 jar {

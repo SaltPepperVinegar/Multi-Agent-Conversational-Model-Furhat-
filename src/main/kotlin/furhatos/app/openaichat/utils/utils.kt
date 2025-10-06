@@ -1,5 +1,8 @@
 package furhatos.app.openaichat.flow
 
+import com.theokanning.openai.completion.chat.ChatMessage
+import furhatos.app.openaichat.utils.Segment
+import furhatos.app.openaichat.utils.toGesture
 import furhatos.flow.kotlin.*
 import furhatos.gestures.ARKitParams
 import furhatos.gestures.BasicParams
@@ -53,4 +56,56 @@ fun GazeAversion(duration: Double = 1.0) = defineGesture("GazeAversion") {
         }
     }
     reset(dur)
+}
+fun getFurhatHistory(n : Int  = 50) : String {
+    return Furhat.dialogHistory.all.takeLast(n).mapNotNull {
+        when (it) {
+            is DialogHistory.ResponseItem -> {
+                "user ${it.response.text}"
+            }
+            is DialogHistory.UtteranceItem -> {
+                "assistant: ${it.toText()}"
+            }
+            else -> null
+        }
+    }.joinToString(separator = "\n")
+}
+fun getUserMessage(n : Int  = 50) : List<ChatMessage> {
+    val history = Furhat.dialogHistory.all.takeLast(n).mapNotNull {
+        when (it) {
+            is DialogHistory.ResponseItem -> {
+                ChatMessage("user", it.response.text)
+            }
+            else -> null
+        }
+    } as List<ChatMessage>
+
+    return history
+}
+
+fun getFurhatMessage(n : Int  = 10) : List<ChatMessage> {
+    val history = Furhat.dialogHistory.all.takeLast(n).mapNotNull {
+        when (it) {
+            is DialogHistory.ResponseItem -> {
+                ChatMessage("user", it.response.text)
+            }
+            is DialogHistory.UtteranceItem -> {
+                ChatMessage("assistant", it.toText())
+            }
+            else -> null
+        }
+    } as List<ChatMessage>
+
+    return history
+}
+
+
+fun FlowControlRunner.presentSpeech(segments : List<Segment>) {
+    for (segment in segments){
+        val g = toGesture(segment.gesture.name)
+        furhat.gesture(g)
+        furhat.say(segment.sentence)
+
+    }
+
 }
